@@ -1,0 +1,30 @@
+name: Update README
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'easy/**'
+      - 'medium/**'
+      - 'hard/**'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Update README
+        run: ruby scripts/update_readme.rb
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet README.md || (git add README.md && git commit -m "docs: update README stats" && git push)
