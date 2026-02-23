@@ -4,6 +4,7 @@
 # Updates README.md with current problem counts and problem lists.
 
 DIFFICULTIES = %w[easy medium hard].freeze
+BADGE_COLORS = { 'easy' => '5CB85C', 'medium' => 'F0AD4E', 'hard' => 'D9534F' }.freeze
 ROOT = File.expand_path('..', __dir__)
 
 def titleize(filename)
@@ -19,38 +20,47 @@ def collect_problems
 end
 
 def build_stats(problems)
-  rows = DIFFICULTIES.map do |diff|
-    "| #{diff.capitalize} | #{problems[diff].size} |"
-  end
   total = problems.values.sum(&:size)
-  rows << "| **Total** | **#{total}** |"
+  badges = DIFFICULTIES.map do |diff|
+    color = BADGE_COLORS[diff]
+    "![#{diff.capitalize}](https://img.shields.io/badge/#{diff.capitalize}-#{problems[diff].size}-#{color}?style=for-the-badge)"
+  end
+  badges << "![Total](https://img.shields.io/badge/Total-#{total}-007EC6?style=for-the-badge)"
 
-  <<~TABLE
-    | Difficulty | Count |
-    |------------|-------|
-    #{rows.join("\n")}
-  TABLE
+  <<~STATS
+    <div align="center">
+
+    | #{badges.join(' | ')} |
+    |#{badges.map { ':---:' }.join('|')}|
+
+    </div>
+  STATS
 end
 
 def build_problem_list(problems)
   sections = DIFFICULTIES.map do |diff|
     files = problems[diff]
-    heading = "### #{diff.capitalize}"
+    open_attr = files.any? ? ' open' : ''
+    header = "<details#{open_attr}>\n<summary><b>#{diff.capitalize}</b> (#{files.size})</summary>"
+
     if files.empty?
-      "#{heading}\nNo problems solved yet."
+      "#{header}\n\nNo problems solved yet.\n\n</details>"
     else
       rows = files.each_with_index.map do |f, i|
         "| #{i + 1} | [#{titleize(f)}](#{diff}/#{f}) |"
       end
-      <<~SECTION
-        #{heading}
+      <<~SECTION.chomp
+        #{header}
+
         | # | Problem |
         |---|---------|
         #{rows.join("\n")}
+
+        </details>
       SECTION
     end
   end
-  sections.join("\n")
+  sections.join("\n\n")
 end
 
 problems = collect_problems
