@@ -29,7 +29,7 @@
 
 | # | Problem |
 |---|---------|
-| 1 | [Can Place Numbers](easy/can-place-numbers.rb) |
+| 1 | [Can Place Flowers](easy/can-place-flowers.rb) |
 | 2 | [Kids With The Greatest Number Of Candies](easy/kids-with-the-greatest-number-of-candies.rb) |
 | 3 | [Merge Strings Alternatively](easy/merge-strings-alternatively.rb) |
 | 4 | [Reverse Vowels Of A String](easy/reverse-vowels-of-a-string.rb) |
